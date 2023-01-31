@@ -38,9 +38,10 @@ async function main(): Promise<void> {
 
   for (const comment of comments) {
     const del = shouldDelete(comment);
+    const created = new Date(comment.created * 1000)
 
     if (del) {
-      console.log('Deleting comment', comment.id, comment.permalink);
+      console.log('[deleting] comment', comment.id, created, comment.permalink);
 
       // @ts-ignore (ignore incorrect typing from library, functionality still works correctly)
       await comment.delete().catch(err => {
@@ -53,7 +54,7 @@ async function main(): Promise<void> {
     } else {
       // only save last id for items we are keeping
       // otherwise it will reference a deleted comment
-      console.log('Keeping comment', comment.id, comment.permalink);
+      console.log('[keeping] comment', comment.id, created, comment.permalink);
   
       state.lastId = comment.id;
       state.kept += 1;
