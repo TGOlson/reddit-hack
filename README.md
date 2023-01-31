@@ -24,3 +24,5 @@ $ npm install
 $ npm run build
 $ node ./dist/indexjs
 ```
+
+_Note: edit `src/should-delete.ts` to desired logic_

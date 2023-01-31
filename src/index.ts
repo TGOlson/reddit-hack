@@ -1,12 +1,14 @@
 import snoowrap from 'snoowrap';
 
 import {loadCredentials, loadState, persistState} from './setup';
+import { shouldDelete } from './should-delete';
 
 async function makeSnoowrap(): Promise<snoowrap> {
   const {username, password, clientId, clientSecret} = await loadCredentials();
-  
+  const userAgent = `User-Agent: mac:localscript.account-cleanup:v0.0.0 (by /u/${username})`;
+
   const r = new snoowrap({
-    userAgent: USER_AGENT,
+    userAgent,
     username,
     password,
     clientId,
@@ -20,31 +22,6 @@ async function makeSnoowrap(): Promise<snoowrap> {
 
   return r;
 }
-
-const shouldDelete = (comment: snoowrap.Comment): boolean => {
-  // const created = new Date(comment.created * 1000);
-  const sub = comment.subreddit_name_prefixed;
-    
-  // // TODO: filter subs
-  // const releventSubs = ['r/nba', 'r/fantasyfootball', 'r/surfing'];
-  // if (!releventSubs.includes(comment.subreddit_name_prefixed)) {
-  //   console.log('Found comment in irrelevant sub:', comment.subreddit_name_prefixed);
-  // }
-
-  // keep all gilded, inspect these later
-  if (comment.gilded) return false;
-
-  // keep high scoring comments, inspect these later
-  if (comment.score > 100) return false;
-  if (comment.score > 20 && sub === 'r/surfing') return false;
-
-  // delete anything older than 2020
-  // if (created.getFullYear() < 2020) return true;
-
-  return true;
-}
-
-const USER_AGENT = 'User-Agent: mac:localscript.account-cleanup:v0.0.0 (by /u/tdotgdot)';
 
 async function main(): Promise<void> {
   const r = await makeSnoowrap();
